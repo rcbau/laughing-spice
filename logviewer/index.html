@@ -34,11 +34,13 @@
 
             function update_view_port() {
                 file_to_load = window.location.hash.substring(1);
-                $.get(file_to_load, null, function(data)
-                    {
-                        $('#view_port').html(data);
-                        Prism.highlightAll();
-                    }, "text");
+                if (file_to_load) {
+                    $.get(file_to_load, null, function(data)
+                        {
+                            $('#view_port').html(data);
+                            Prism.highlightAll();
+                        }, "text");
+                }
             }
 
             $(window).on('hashchange', function() {
