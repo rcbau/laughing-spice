@@ -1,0 +1,25 @@
+.token.timestamp {
+    color: #07a;
+}
+
+.token.heartbeat {
+    color: #ddd;
+}
+
+.token.output_block {
+    color: #bbb;
+}
+
+.token.syslog_block {
+    color: red;
+}
+
+.token.heading,
+.token.done {
+    color: green;
+    font-weight: bold;
+}
+
+.token.migration_up {
+    color: green;
+}

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="prism.js" data-manual></script>
+    <link href="prism.css" rel="stylesheet" />
+    <link href="style.css" rel="stylesheet" />
+</head>
+<body>
+    <header>
+        <h1>Pretty log viewer</h1>
+    </header>
+
+    <section>
+            <p>View port:</p>
+            <pre><code class="language-bash_nova_log" id="view_port"></code></pre>
+    </section>
+
+    <script>
+        $(document).ready(function() {
+            Prism.languages.bash_nova_log = {
+                'timestamp': /[0-9]+-[0-9]+-[0-9]+ [0-9]+:[0-9]+:[0-9]+,[0-9]+/g,
+                'heartbeat': /\[heartbeat\]/,
+                'output_block': /\[output\]/,
+                'syslog_block': /\[syslog\]/,
+                'heading': /\*\*\*\*\*(.*)\*\*\*\*\*/,
+                'migration_up': /[0-9]+ -> [0-9]+\.\.\./,
+                'done': /done/
+            };
+
+            function download_to_element(url, el) {
+
+            }
+
+            function update_view_port() {
+                file_to_load = window.location.hash.substring(1);
+                $.get(file_to_load, null, function(data)
+                    {
+                        $('#view_port').html(data);
+                        Prism.highlightAll();
+                    }, "text");
+            }
+
+            $(window).on('hashchange', function() {
+                update_view_port();
+            });
+
+            update_view_port();
+        });
+    </script>
+</body>
+</html>
