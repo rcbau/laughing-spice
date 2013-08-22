@@ -126,8 +126,10 @@
                     $.get(url_to_load, null, function(data)
                         {
                             $('#view_port').html(data);
-                            create_sections_index(data);
-                            Prism.highlightAll();
+                            if ( ! url_to_load.match('html$') ) {
+                                create_sections_index(data);
+                                Prism.highlightAll();
+                            }
                         }, "text")
                 }
             }
