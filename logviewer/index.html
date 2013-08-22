@@ -30,7 +30,10 @@
                 'syslog_block': /\[syslog\]/,
                 'heading': /\*\*\*\*\*(.*)\*\*\*\*\*/,
                 'migration_up': /[0-9]+ -> [0-9]+\.\.\./,
-                'done': /done/
+                'done': /done/,
+                'error': /(.*)error(.*)/i,
+                'requirement_satisifed': /(.*)Requirement already satisfied(.*)/,
+                'schema_version': /(.*)Schema version is(.*)/,
             };
 
             $.urlParam = function(name){

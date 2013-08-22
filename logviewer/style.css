@@ -29,3 +29,20 @@ pre {
 .token.migration_up {
     color: green;
 }
+
+.token.error {
+    font-size: 14px;
+    color: red;
+    font-weight: bold;
+}
+
+.token.requirement_satisifed {
+    font-size: 10px;
+    color: #AAA;
+}
+
+.token.schema_version {
+    color: blue;
+    font-size: 14px;
+    font-weight: bold;
+}
