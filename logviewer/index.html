@@ -46,6 +46,36 @@
                 }
             }
 
+            function get_timestamp(line) {
+                date_regex= /[0-9]+-[0-9]+-[0-9]+ [0-9]+:[0-9]+:[0-9]+/g
+                datestamp = String(date_regex.exec(line));
+                datestamp = datestamp.replace(/\-/g, '/');
+                date = new Date(datestamp);
+                time = parseInt(Date.parse(date.toString()));
+                miliseconds_regex = /,[0-9]+/g;
+                miliseconds = parseInt(String(miliseconds_regex.exec(line)).substring(1));
+                return time + miliseconds;
+            }
+
+            function calculate_duration(start, end) {
+                duration = (end - start)/1000;
+
+                hours = Math.floor(duration / (60*60));
+                minutes = Math.floor((duration - hours*(60*60)) / 60);
+                seconds = (duration - hours*(60*60) - minutes*60).toFixed(3);
+                output = '';
+                if ( hours > 0 ) {
+                    output += hours + ' hours, ';
+                }
+                if ( minutes > 0 ) {
+                    output += hours + ' minutes, ';
+                }
+                if ( seconds > 0 ) {
+                    output += seconds + ' seconds';
+                }
+                return output;
+            }
+
             function create_sections_index(data) {
                 heading = /\*\*\*\*\*(.*)\*\*\*\*\*/;
                 sections = [];
@@ -59,13 +89,17 @@
                         if ( start_no == 0 ) {
                             start_no = index + 1;
                             title = line.replace(/\*/g, '');
+                            start_time = get_timestamp(line);
                         }
                         else {
                             end_no = index + 1;
+                            end_time = get_timestamp(line);
                             sections.push({
                                 title: title,
                                 start_no: start_no,
-                                end_no: end_no
+                                end_no: end_no,
+                                start_time: start_time,
+                                end_time: end_time
                             });
                             // Reset start
                             start_no = 0;
@@ -78,7 +112,7 @@
                     item += '<a href="#play.' + section.start_no + '-' + section.end_no + '">';
                     item += section.title;
                     item += '</a>'
-                    item += ' -- ' + (60-30) + ' seconds';
+                    item += ' -- ' + calculate_duration(section.start_time, section.end_time);
                     item += '</li>';
 
                     $('#sections').append(item);
