@@ -12,8 +12,13 @@
     </header>
 
     <section>
+            <strong><a href="#" id="original_link">View original file</a></strong>
+            <div>
+                <p>Report Sections:</p>
+                <ul id="sections"></ul>
+            </div>
             <p>View port:</p>
-            <pre><code class="language-bash_nova_log" id="view_port"></code></pre>
+            <pre id="play"><code class="language-bash_nova_log" id="view_port"></code></pre>
     </section>
 
     <script>
@@ -28,24 +33,67 @@
                 'done': /done/
             };
 
-            function download_to_element(url, el) {
-
-            }
-
-            function update_view_port() {
-                file_to_load = window.location.hash.substring(1);
-                if (file_to_load) {
-                    $.get(file_to_load, null, function(data)
-                        {
-                            $('#view_port').html(data);
-                            Prism.highlightAll();
-                        }, "text");
+            $.urlParam = function(name){
+                var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href);
+                if (results==null){
+                   return null;
+                }
+                else{
+                   return results[1] || 0;
                 }
             }
 
-            $(window).on('hashchange', function() {
-                update_view_port();
-            });
+            function create_sections_index(data) {
+                heading = /\*\*\*\*\*(.*)\*\*\*\*\*/;
+                sections = [];
+                title = '';
+                start_no = 0;
+                start_time = 0;
+                end_no = 0;
+                end_time = 0;
+                $.each(data.split('\n'), function(index, line) {
+                    if (heading.test(line)) {
+                        if ( start_no == 0 ) {
+                            start_no = index + 1;
+                            title = line.replace(/\*/g, '');
+                        }
+                        else {
+                            end_no = index + 1;
+                            sections.push({
+                                title: title,
+                                start_no: start_no,
+                                end_no: end_no
+                            });
+                            // Reset start
+                            start_no = 0;
+                        }
+                    }
+                });
+
+                $.each(sections, function(index, section) {
+                    item = '<li>';
+                    item += '<a href="#play.' + section.start_no + '-' + section.end_no + '">';
+                    item += section.title;
+                    item += '</a>'
+                    item += ' -- ' + (60-30) + ' seconds';
+                    item += '</li>';
+
+                    $('#sections').append(item);
+                });
+            }
+
+            function update_view_port() {
+                url_to_load = $.urlParam('q');
+                if (url_to_load) {
+                    $('#original_link').attr('href', url_to_load)
+                    $.get(url_to_load, null, function(data)
+                        {
+                            $('#view_port').html(data);
+                            create_sections_index(data);
+                            Prism.highlightAll();
+                        }, "text")
+                }
+            }
 
             update_view_port();
         });
